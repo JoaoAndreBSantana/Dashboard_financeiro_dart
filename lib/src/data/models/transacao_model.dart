@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-/// Enum para definir o tipo da transacao despesa ou receita
-enum TransactionType { expense, income }
+/// Enum de despesa ou receita
+enum TransactionType { despesa, receita }
 
-/// Representa uma transação financeira.
+/// representa uma transação financeira
 class Transaction extends Equatable {
   final int? id; 
   final String description; 
@@ -24,27 +24,27 @@ class Transaction extends Equatable {
   @override
   List<Object?> get props => [id, description, amount, date, categoryId, type];
 
-  /// Converte um objeto Transaction em um Map para salvar no banco.
+  // converte um objeto Transaction em um map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'description': description,
       'amount': amount,
-      'date': date.toIso8601String(), // Converte DateTime para string
+      'date': date.toIso8601String(), 
       'categoryId': categoryId,
       'type': type.name, 
     };
   }
 
-  /// Cria um objeto Transaction a partir de um Map vindo do banco.
+  /// objeto transaction a partir de um map
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
       id: map['id'],
       description: map['description'],
       amount: map['amount'],
-      date: DateTime.parse(map['date']), // Converte a string de volta para DateTime
+      date: DateTime.parse(map['date']), //converte para date time
       categoryId: map['categoryId'],
-      type: TransactionType.values.byName(map['type']), // Converte a string de volta para o enum
+      type: TransactionType.values.byName(map['type']), // para enum
     );
   }
 }

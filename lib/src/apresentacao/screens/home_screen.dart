@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../data/models/category_model.dart';
-import '../../data/models/transaction_model.dart'; 
-import '../../logic/blocs/category_bloc.dart';
-import '../../logic/blocs/transaction_bloc.dart';
-import '../../logic/blocs/filter_bloc.dart';
-import '../../logic/events/transaction_event.dart';
-import '../../logic/events/filter_event.dart'; 
-import '../../logic/states/category_state.dart';
-import '../../logic/states/transaction_state.dart';
-import '../../logic/states/filter_state.dart';
-import '../widgets/transaction_list_item.dart';
-import 'add_transaction_screen.dart';
-import 'dashboard_view.dart'; 
+import '../../data/models/categoria_model.dart';
+import '../../data/models/transacao_model.dart';
+import '../../logica/blocs/categoria_bloc.dart';
+import '../../logica/blocs/transacao_bloc.dart';
+import '../../logica/blocs/filter_bloc.dart';
+import '../../logica/events/transacao_event.dart';
+import '../../logica/events/filter_event.dart';
+import '../../logica/states/categoria_state.dart';
+import '../../logica/states/transacao_state.dart';
+import '../../logica/states/filter_state.dart';
+import '../widgets/item_lista_transacao.dart';
+import 'add_transacao.dart';
+import 'dashboard_view.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  //Funcao para mostrar o seletor de período
+
   Future<void> _selectDateRange(BuildContext context) async {
+    // peega o estado atual do filterbloc para saber se existe um filtro aplicado
     final initialDateRange = context.read<FilterBloc>().state.dateRange ??
+        //  define um intervalo padrao
         DateTimeRange(
           start: DateTime.now().subtract(const Duration(days: 30)),
           end: DateTime.now(),
         );
 
+   //seletor de data
     final newDateRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -33,10 +37,11 @@ class HomeScreen extends StatelessWidget {
       initialDateRange: initialDateRange,
     );
 
+    //  o usuario selecionou um novo intervalo
     if (newDateRange != null) {
-      //atualizo o FilterBloc
+      
       context.read<FilterBloc>().add(UpdateDateRange(dateRange: newDateRange));
-      //dispara o recarregamento
+      // recarregar as transacoes com o novo filtro de data
       context.read<TransactionBloc>().add(LoadTransactions(dateRange: newDateRange));
     }
   }
@@ -51,37 +56,41 @@ class HomeScreen extends StatelessWidget {
           title: const Text('Dashboard Financeiro'),
           centerTitle: true,
           actions: [
-            
-            
+            //ouve as mudanças no filterbloc
             BlocBuilder<FilterBloc, FilterState>(
               builder: (context, state) {
+                // O ícone do botão muda dependendo se há um filtro de data ativo ou n
                 return IconButton(
                   icon: Icon(
                     state.dateRange == null ? Icons.filter_list : Icons.filter_list_off,
                   ),
+                  // funcao para selecionar o intervalo de datas
                   onPressed: () => _selectDateRange(context),
                 );
               },
             ),
           ],
+          // tabbar
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.list_alt), text: 'Transações'),
-              Tab(icon: Icon(Icons.pie_chart), text: 'Dashboard'),
+              Tab(icon: Icon(Icons.pie_chart), text: 'Gráfico'),
             ],
           ),
         ),
-        // tabarview para alternar entre as abas
+        
         body: const TabBarView(
           children: [
-            // Conteúdo da primeira aba
+            
             TransactionListView(),
-            // Conteúdo da segunda aba 
+          
             DashboardView(),
           ],
         ),
+        // botao para adicionar uma nova transacao
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            // Navega pra adicionar transacao
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
             );
@@ -93,35 +102,46 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// widget responsavel por exibir a lista de transacoes
 
 class TransactionListView extends StatelessWidget {
   const TransactionListView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    //  Ouve bloc de categoria
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, categoryState) {
+        // validacao
         if (categoryState is CategoryLoaded) {
+          
           final categoryMap = {for (var cat in categoryState.categories) cat.id: cat};
 
+          // ouve bloco de trnsacao
           return BlocBuilder<TransactionBloc, TransactionState>(
             builder: (context, transactionState) {
+              // Se as transacoes estao carregando
               if (transactionState is TransactionLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
+              // Se as transacoes foram carregadas com sucesso
               if (transactionState is TransactionLoaded) {
+               
                 if (transactionState.transactions.isEmpty) {
                   return const Center(
                     child: Text('Nenhuma transação encontrada.'),
                   );
                 }
+                // Se houver transacoes, constroi a lista
                 return ListView.builder(
                   padding: const EdgeInsets.all(8.0),
                   itemCount: transactionState.transactions.length,
                   itemBuilder: (context, index) {
+                    // Pega a transacao e a categoria
                     final transaction = transactionState.transactions[index];
                     final category = categoryMap[transaction.categoryId];
 
+                    // desenhar cada linha da lista
                     return TransactionListItem(
                       transaction: transaction,
                       category: category,
@@ -129,19 +149,24 @@ class TransactionListView extends StatelessWidget {
                   },
                 );
               }
+              
               if (transactionState is TransactionError) {
                 return Center(child: Text(transactionState.message));
               }
+              // estado inicial
               return const Center(child: Text('Iniciando...'));
             },
           );
         }
+      
         if (categoryState is CategoryLoading) {
           return const Center(child: CircularProgressIndicator());
         }
+        
         if (categoryState is CategoryError) {
           return Center(child: Text(categoryState.message));
         }
+       
         return const Center(child: Text('Carregando categorias...'));
       },
     );

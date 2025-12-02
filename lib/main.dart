@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'src/data/datasources/local_datasource.dart';
-import 'src/data/repositories/category_repository.dart';
-import 'src/data/repositories/transaction_repository.dart';
-import 'src/logic/blocs/category_bloc.dart';
-import 'src/logic/blocs/transaction_bloc.dart';
-import 'src/logic/events/category_event.dart';
-import 'src/logic/events/transaction_event.dart';
-import 'src/presentation/screens/home_screen.dart';
-import 'src/logic/blocs/filter_bloc.dart';
+import 'src/data/repositories/categoria_repository.dart';
+import 'src/data/repositories/transacao_repository.dart';
+import 'src/logica/blocs/categoria_bloc.dart';
+import 'src/logica/blocs/transacao_bloc.dart';
+import 'src/logica/events/categoria_event.dart';
+import 'src/logica/events/transacao_event.dart';
+import 'src/apresentacao/screens/home_screen.dart';
+import 'src/logica/blocs/filter_bloc.dart';
 
 void main() {
 
@@ -27,7 +27,7 @@ class FinancialDashboardApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<LocalDataSource>(
-          create: (context) => LocalDataSource(),
+          create: (context) => LocalDataSource(),// instancia o datasource
         ),
         RepositoryProvider<CategoryRepository>(
           create: (context) => CategoryRepository(
@@ -41,7 +41,7 @@ class FinancialDashboardApp extends StatelessWidget {
         ),
       ],
       
-      // MultiBlocProvider cria e disponibiliza os bloc para a ui
+      // disponibiliza os bloc 
       child: MultiBlocProvider(
         providers: [
           BlocProvider<FilterBloc>(

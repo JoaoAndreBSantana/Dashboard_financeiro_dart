@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/category_repository.dart';
-import '../events/category_event.dart';
-import '../states/category_state.dart';
+import '../../data/repositories/categoria_repository.dart';
+import '../events/categoria_event.dart';
+import '../states/categoria_state.dart';
 
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
@@ -15,7 +15,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<LoadCategories>(_onLoadCategories);
   }
 
-  //método chamado quando o evento loadcategories é adicionado ao bloc
+ 
   Future<void> _onLoadCategories(
     LoadCategories event,
     Emitter<CategoryState> emit,
@@ -23,7 +23,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
    
     emit(CategoryLoading());
     try {
-      // Tenta buscar as categorias do repositório.
+      
       final categories = await _categoryRepository.getAllCategories();
       
       emit(CategoryLoaded(categories));

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../datasources/local_datasource.dart';
-import '../models/category_model.dart';
+import '../models/categoria_model.dart';
 
 class CategoryRepository {
   final LocalDataSource localDataSource;

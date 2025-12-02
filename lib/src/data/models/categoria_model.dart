@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-/// Representa uma categoria de transação.
+
 
 class Category extends Equatable {
   final int? id; 
   final String name; 
-  final int iconCodePoint; // O código do ícone a ser exibido
+  final int iconCodePoint; 
   final String color; 
 
   const Category({
@@ -16,11 +16,11 @@ class Category extends Equatable {
     required this.color,
   });
 
-  /// Propriedades usadas pelo `Equatable` para comparar instâncias de Category.
+  
   @override
   List<Object?> get props => [id, name, iconCodePoint, color];
 
-  /// Converte um objeto Category em um mapa para facilitar o armazenamento no banco
+  // converte um objeto category em um mapa 
   
   Map<String, dynamic> toMap() {
     return {
@@ -31,7 +31,7 @@ class Category extends Equatable {
     };
   }
 
-  ///cria um objeto Category a partir de um Map.
+  //cria um objeto 
   
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(

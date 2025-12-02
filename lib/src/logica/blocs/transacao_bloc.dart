@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/transaction_repository.dart';
-import '../events/transaction_event.dart';
-import '../states/transaction_state.dart';
+import '../../data/repositories/transacao_repository.dart';
+import '../events/transacao_event.dart';
+import '../states/transacao_state.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final TransactionRepository _transactionRepository;

@@ -2,48 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/models/category_model.dart';
-import '../../data/models/transaction_model.dart'; 
-import '../../logic/blocs/category_bloc.dart';
-import '../../logic/blocs/transaction_bloc.dart';
-import '../../logic/states/category_state.dart';
-import '../../logic/states/transaction_state.dart';
-import '../widgets/category_pie_chart.dart';
-import '../widgets/summary_card.dart';
+import '../../data/models/categoria_model.dart';
+import '../../data/models/transacao_model.dart'; 
+import '../../logica/blocs/categoria_bloc.dart';
+import '../../logica/blocs/transacao_bloc.dart';
+import '../../logica/states/categoria_state.dart';
+import '../../logica/states/transacao_state.dart';
+import '../widgets/grafico_pizza_categoria.dart';
+import '../widgets/cartao_resumo.dart';
+
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // ouve o bloco de trnsacao para obter o estado
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, transactionState) {
+      
         return BlocBuilder<CategoryBloc, CategoryState>(
           builder: (context, categoryState) {
+            // valida se transacao e categoria foram carregadas
             if (transactionState is TransactionLoaded && categoryState is CategoryLoaded) {
+              
               if (transactionState.transactions.isEmpty) {
                 return const Center(child: Text('Adicione transações para ver o dashboard.'));
               }
 
               
+              //variaveis para guardar os totais
               double totalIncome = 0;
               double totalExpenses = 0;
+              
               for (var transaction in transactionState.transactions) {
-                if (transaction.type == TransactionType.income) {
+                // verifica o tipo da transação para somar 
+                if (transaction.type == TransactionType.receita) {
                   totalIncome += transaction.amount;
                 } else {
                   totalExpenses += transaction.amount;
                 }
               }
+              // calcula o saldo final
               final double balance = totalIncome - totalExpenses;
 
               
+
+              // Usa um ListView para que a tela seja rolável.
               return ListView(
                 padding: const EdgeInsets.all(12.0),
                 children: [
-                
+                  // Linha com os cards de resumo (Receitas e Despesas).
                   Row(
                     children: [
+                      // cartao resumo receitas e despesas
                       SummaryCard(
                         title: 'Receitas',
                         amount: totalIncome,
@@ -60,6 +72,7 @@ class DashboardView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  // Card para mostrar o saldo total.
                   Card(
                     color: Theme.of(context).colorScheme.surfaceVariant,
                     child: Padding(
@@ -70,6 +83,7 @@ class DashboardView extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
+                           
                             color: balance >= 0 ? Colors.green.shade300 : Colors.red.shade300,
                           ),
                         ),
@@ -81,7 +95,7 @@ class DashboardView extends StatelessWidget {
                   const Divider(),
                   const SizedBox(height: 16),
 
-                  
+                  //card que mostra a legenda das cores 
                   Card(
                     elevation: 2,
                     child: Padding(
@@ -98,8 +112,11 @@ class DashboardView extends StatelessWidget {
                           Wrap(
                             spacing: 16.0, 
                             runSpacing: 8.0,  
+                            // pega a lista de categorias do bloc
                             children: categoryState.categories
+                               
                                 .where((cat) => cat.name != 'Salário') 
+                                //  cria um widget para cada categoria restante
                                 .map((category) {
                                   return Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -114,7 +131,7 @@ class DashboardView extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      // O nome da categoria
+                                      // O nome da categoria.
                                       Text(category.name),
                                     ],
                                   );
@@ -125,15 +142,15 @@ class DashboardView extends StatelessWidget {
                     ),
                   ),
                  
-
                   const SizedBox(height: 24),
 
-                 
+                
                   Text(
                     'Gráfico de Despesas',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
+                  
                   CategoryPieChart(
                     transactions: transactionState.transactions,
                     categories: categoryState.categories,
@@ -141,6 +158,7 @@ class DashboardView extends StatelessWidget {
                 ],
               );
             }
+            
             return const Center(child: CircularProgressIndicator());
           },
         );

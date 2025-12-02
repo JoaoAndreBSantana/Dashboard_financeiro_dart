@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../data/models/category_model.dart';
-import '../../data/models/transaction_model.dart';
+import '../../data/models/categoria_model.dart';
+import '../../data/models/transacao_model.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
@@ -15,7 +15,7 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = transaction.type == TransactionType.income
+    final color = transaction.type == TransactionType.receita
         ? Colors.green.shade400
         : Colors.red.shade400;
 
@@ -46,7 +46,7 @@ class TransactionListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${transaction.type == TransactionType.income ? '+' : '-'} ${currencyFormat.format(transaction.amount)}',
+              '${transaction.type == TransactionType.receita ? '+' : '-'} ${currencyFormat.format(transaction.amount)}',
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.bold,

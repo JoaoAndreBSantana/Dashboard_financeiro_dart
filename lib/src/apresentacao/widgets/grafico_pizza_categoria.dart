@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/category_model.dart';
-import '../../data/models/transaction_model.dart';
+import '../../data/models/categoria_model.dart';
+import '../../data/models/transacao_model.dart';
 
 class CategoryPieChart extends StatelessWidget {
   final List<Transaction> transactions;
@@ -20,7 +20,7 @@ class CategoryPieChart extends StatelessWidget {
     double totalExpenses = 0;
 
     
-    final expenses = transactions.where((t) => t.type == TransactionType.expense);
+    final expenses = transactions.where((t) => t.type == TransactionType.despesa);
     for (var expense in expenses) {
       totalExpenses += expense.amount;
       // agrupa os valores por id de categoria
@@ -35,7 +35,7 @@ class CategoryPieChart extends StatelessWidget {
       return []; // Retorna lista vazia se não houver despesas
     }
 
-    // 3. Converte os dados agrupados em seções para o gráfico.
+    // converte os dados agrupados em secoes para o grafico
     return categoryExpenses.entries.map((entry) {
       final categoryId = entry.key;
       final amount = entry.value;

@@ -1,21 +1,21 @@
-import '../models/category_model.dart';
-import '../models/transaction_model.dart';
+import '../models/categoria_model.dart';
+import '../models/transacao_model.dart';
 import 'local/database_helper.dart';
 import 'package:flutter/material.dart'; 
 
-///classe responsável por todas as operações de crud no banco
+
 class LocalDataSource {
   final dbHelper = DatabaseHelper.instance;
 
  
 
-  /// Insere uma nova categoria no banco de dados.
+  //inserir
   Future<int> insertCategory(Category category) async {
     final db = await dbHelper.database;
     return await db.insert('categories', category.toMap());
   }
 
-  /// Busca todas as categorias do banco de dados.
+  //buscar
   Future<List<Category>> getAllCategories() async {
     final db = await dbHelper.database;
     final maps = await db.query('categories');
@@ -26,13 +26,13 @@ class LocalDataSource {
 
  
 
-  /// Insere uma nova transação no banco de dados.
+  /// Inserir
   Future<int> insertTransaction(Transaction transaction) async {
     final db = await dbHelper.database;
     return await db.insert('transactions', transaction.toMap());
   }
 
-  /// Busca todas as transacoes filtrando por um intervalo de datas
+  //buscar
   Future<List<Transaction>> getAllTransactions({DateTimeRange? dateRange}) async {
     final db = await dbHelper.database;
     
@@ -59,7 +59,7 @@ class LocalDataSource {
     });
   }
 
-  /// feleta uma transação por id
+  /// deleta uma transação por id
   Future<int> deleteTransaction(int id) async {
     final db = await dbHelper.database;
     return await db.delete('transactions', where: 'id = ?', whereArgs: [id]);

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/transaction_model.dart';
+import '../../data/models/transacao_model.dart';
 
 abstract class TransactionEvent extends Equatable {
   const TransactionEvent();
